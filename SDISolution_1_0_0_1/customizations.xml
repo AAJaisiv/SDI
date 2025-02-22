@@ -1,0 +1,51 @@
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.24104.176" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.24104.00176">
+  <Entities></Entities>
+  <Roles></Roles>
+  <Workflows>
+    <Workflow WorkflowId="{b2c127cf-6f50-4301-8fdf-c1d1fbf1cf8d}" Name="SDI Web Scraping">
+      <JsonFileName>/Workflows/SDIWebScraping-B2C127CF-6F50-4301-8FDF-C1D1FBF1CF8D.json</JsonFileName>
+      <Type>1</Type>
+      <Subprocess>0</Subprocess>
+      <Category>6</Category>
+      <Mode>0</Mode>
+      <Scope>4</Scope>
+      <OnDemand>0</OnDemand>
+      <TriggerOnCreate>0</TriggerOnCreate>
+      <TriggerOnDelete>0</TriggerOnDelete>
+      <AsyncAutodelete>0</AsyncAutodelete>
+      <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+      <StateCode>1</StateCode>
+      <StatusCode>2</StatusCode>
+      <RunAs>1</RunAs>
+      <IsTransacted>1</IsTransacted>
+      <IntroducedVersion>1.0</IntroducedVersion>
+      <IsCustomizable>1</IsCustomizable>
+      <BusinessProcessType>0</BusinessProcessType>
+      <UIFlowType>2</UIFlowType>
+      <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+      <Metadata>{"clientversion":"2.49.177.24289","isvalid":true,"$schema":"https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#","schemaVersion":"ROBIN_20211012","containsActiveConnections":false,"containsGptPredictActions":false,"containsActiveCopilotActions":false,"containsActiveWorkQueuesActions":false,"containsActiveLogMessageActions":false,"containsActiveCredentialsActions":false,"multipleRequestsState":0,"scriptType":0,"disableScreenshotCaptureOnError":false,"missingUiElementRepairType":null,"flowTimeout":null}</Metadata>
+      <Inputs>{"schema":null}</Inputs>
+      <Outputs>{"schema":null}</Outputs>
+      <Dependencies>{"childFlows":[],"workQueues":[],"environmentVariables":[],"requiredBinaries":["ac82c575-89b3-435f-9898-b171387d0d56","1a472f6e-267c-412f-b993-9bc73ff8072f","286eb09f-e4fd-4d38-a141-3eb8f7e9ac63"]}</Dependencies>
+      <ConnectionReferences>[]</ConnectionReferences>
+      <Definition>"@@ConnectionString: ''\r\n@@Type: 'Local'\r\n@@DesktopType: 'local'\r\n@@DisplayName: 'Local computer'\r\nIMPORT 'controlRepo.appmask' AS appmask\r\nIMPORT 'imageRepo.imgrepo' AS imgrepo\r\n@SENSITIVE: []\r\n**REGION Get CSV data\r\nExcel.LaunchExcel.LaunchAndOpenUnderExistingProcess Path: $'''C:\\\\KamrulInfo\\\\Monir Bhai\\\\Project\\\\SDI\\\\SearchProject\\\\Category.xlsx''' Visible: True ReadOnly: False Instance=&gt; ExcelInstancekeywords\r\nExcel.ReadFromExcel.ReadCells Instance: ExcelInstancekeywords StartColumn: 2 StartRow: 2 EndColumn: 2 EndRow: 80 ReadAsText: False FirstLineIsHeader: True RangeValue=&gt; ExcelData\r\nExcel.CloseExcel.Close Instance: ExcelInstancekeywords\r\n**ENDREGION\r\nDISABLE File.ReadTextFromFile.ReadTextAsList File: $'''C:\\\\KamrulInfo\\\\Monir Bhai\\\\Project\\\\SDI\\\\SearchProject\\\\ListofkeywordsSearch.txt''' Encoding: File.TextFileEncoding.UTF8 Contents=&gt; FileContents\r\n**REGION Web Scrapping\r\nLOOP FOREACH CurrentItem IN ExcelData\r\n    SET CategoryPath TO $'''C:\\\\KamrulInfo\\\\Monir Bhai\\\\Project\\\\SDI\\\\SearchProject'''\r\n    SET TargetedURL TO $'''https://www.sbir.gov/awards'''\r\n    WebAutomation.LaunchChrome.LaunchChrome Url: TargetedURL WindowState: WebAutomation.BrowserWindowState.Maximized ClearCache: False ClearCookies: False WaitForPageToLoadTimeout: 60 Timeout: 60 PiPUserDataFolderMode: WebAutomation.PiPUserDataFolderModeEnum.AutomaticProfile TargetDesktop: $'''{\\\"DisplayName\\\":\\\"Local computer\\\",\\\"Route\\\":{\\\"ServerType\\\":\\\"Local\\\",\\\"ServerAddress\\\":\\\"\\\"}}''' BrowserInstance=&gt; Browser\r\n    WebAutomation.PopulateTextField.PopulateTextFieldUsePhysicalKeyboard BrowserInstance: Browser Control: appmask['Web Page \\'https://www.sbir.gov/awards\\'']['Input text \\'keywords\\' 2'] Text: CurrentItem Mode: WebAutomation.PopulateTextMode.Replace UnfocusAfterPopulate: True WaitForPageToLoadTimeout: 60\r\n    MouseAndKeyboard.SendKeys.FocusAndSendKeys TextToSend: $'''{Return}''' DelayBetweenKeystrokes: 10 SendTextAsHardwareKeys: False\r\n    WebAutomation.SetCheckboxState.SetCheckboxState BrowserInstance: Browser Control: appmask['Web Page \\'https://www.sbir.gov/awards\\'']['Label \\'2024\\''] State: WebAutomation.CheckboxState.Checked WaitForPageToLoadTimeout: 60\r\n    WebAutomation.PressButton.PressButton BrowserInstance: Browser Control: appmask['Web Page \\'https://www.sbir.gov/awards\\'']['Anchor \\'Apply 🗘\\''] WaitForPageToLoadTimeout: 60\r\n    WAIT 1\r\n    WebAutomation.GetDetailsOfElement BrowserInstance: Browser Control: appmask['Web Page \\'https://www.sbir.gov/awards\\'']['Span \\'No Results  ...  and try again.\\''] AttributeName: $'''Exists''' AttributeValue=&gt; SearchValue\r\n    DISABLE Display.ShowMessageDialog.ShowMessage Title: $'''element value''' Message: SearchValue Icon: Display.Icon.None Buttons: Display.Buttons.OK DefaultButton: Display.DefaultButton.Button1 IsTopMost: False ButtonPressed=&gt; ButtonPressed\r\n    IF Contains(SearchValue, $'''false''', False) THEN\r\n        WebAutomation.Click.Click BrowserInstance: Browser Control: appmask['Web Page \\'https://www.sbir.gov/awards\\'']['Anchor \\'Persistently  ...  System (PEGASUS)\\''] ClickType: WebAutomation.ClickType.LeftClick MouseClick: False WaitForPageToLoadTimeout: 60 MousePositionRelativeToElement: WebAutomation.RectangleEdgePoint.MiddleCenter OffsetX: 0 OffsetY: 0\r\n        WebAutomation.ExtractData.ExtractTableInExcel BrowserInstance: Browser Control: $'''html &gt; body &gt; div &gt; main &gt; div:eq(6) &gt; div &gt; div &gt; section:eq(1) &gt; div &gt; div''' ExtractionParameters: {[$'''div:eq(0) &gt; a &gt; h4''', $'''Own Text''', $'''''', $'''Value #1'''], [$'''div:eq(0) &gt; address''', $'''Own Text''', $'''''', $'''Value #2'''], [$'''div:eq(1) &gt; p:eq(0)''', $'''Own Text''', $'''''', $'''Value #3'''], [$'''div:eq(1) &gt; p:eq(1)''', $'''Own Text''', $'''''', $'''Value #4'''] } PostProcessData: False TimeoutInSeconds: 60 ExcelInstance=&gt; ExcelInstance\r\n        DISABLE Excel.SaveExcel.Save Instance: ExcelInstance\r\n        DISABLE Excel.CloseExcel.Close Instance: ExcelInstance\r\n        DISABLE Text.AppendLine Text: FileContents LineToAppend: CurrentItem Result=&gt; Result\r\n        File.WriteText File: $'''C:\\\\KamrulInfo\\\\Monir Bhai\\\\Project\\\\SDI\\\\SearchProject\\\\ListofkeywordsSearch.txt''' TextToWrite: CurrentItem AppendNewLine: True IfFileExists: File.IfFileExists.Append Encoding: File.FileEncoding.Unicode\r\n    END\r\n    WebAutomation.CloseWebBrowser BrowserInstance: Browser\r\nEND\r\n**REGION Data Extracting\r\nOutlook.Launch Instance=&gt; OutlookInstance\r\nOutlook.SendEmailThroughOutlook.SendEmail Instance: OutlookInstance Account: $'''kamrul@CloudSoft365x24x7.onmicrosoft.com''' SendTo: $'''kamrul@CloudSoft365x24x7.onmicrosoft.com''' Subject: $'''Test Web data extracting - October 2024''' Body: $'''Hi Admin,\r\nHere is Test Web data extracting - October 2024\r\n\r\n\r\nRegards\r\nSystem Admin''' IsBodyHtml: True IsDraft: False\r\nOutlook.Close Instance: OutlookInstance\r\n**ENDREGION\r\n**ENDREGION\r\n**REGION Close Browser\r\nWebAutomation.CloseWebBrowser BrowserInstance: Browser\r\n**ENDREGION\r\n"</Definition>
+      <SchemaVersion>2022.07</SchemaVersion>
+      <DesktopFlowModules>[]</DesktopFlowModules>
+      <PrimaryEntity>none</PrimaryEntity>
+      <LocalizedNames>
+        <LocalizedName languagecode="1033" description="SDI Web Scraping" />
+      </LocalizedNames>
+    </Workflow>
+  </Workflows>
+  <FieldSecurityProfiles></FieldSecurityProfiles>
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>
