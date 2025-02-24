@@ -34,7 +34,7 @@ Reporting: Comprehensive PDF reports and client documentation.
 
 Python: Advanced web scraping using libraries like Requests, BeautifulSoup, and Selenium.
 
-Machine Learning & NLP**: Keyword extraction, sentiment analysis, and categorization of scraped data using libraries such as scikit-learn, NLTK, and spaCy.
+Machine Learning & NLP: Keyword extraction, sentiment analysis, and categorization of scraped data using libraries such as scikit-learn, NLTK, and spaCy.
 
 SQL: Database management and data storage using PostgreSQL.
 
