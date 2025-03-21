@@ -10,6 +10,14 @@ Market Opportunity Analysis: A comprehensive market research project analyzing o
 
 SDI Web Scraping Workflow:  An advanced automation workflow implemented via Python, SQL, and Microsoft Power Automate to extract relevant data from web sources for market analysis and reporting.
 
+### Team:
+
+Pooja Nalam
+Sruthi Anuvalasetty
+Jaya Saran Teja Pavuluri
+Abhinav Jaisiv Arkala
+
+
 ### Tech Stack
 
 ### Trends Tracker Tool
