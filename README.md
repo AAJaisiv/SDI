@@ -13,8 +13,11 @@ SDI Web Scraping Workflow:  An advanced automation workflow implemented via Pyth
 ### Team:
 
 Pooja Nalam
+
 Sruthi Anuvalasetty
+
 Jaya Saran Teja Pavuluri
+
 Abhinav Jaisiv Arkala
 
 
